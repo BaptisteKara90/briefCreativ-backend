@@ -21,7 +21,7 @@ router.get('/', async (req,res)=>{
     if (!user) {
       return res.status(401).json({ message: 'Token invalide' });
     }
-    console.log(user)
+
 
     const profil = await Profil.findOne({user_id: user._id});
     if (!profil) {
@@ -53,7 +53,7 @@ router.put('/', async (req, res)=>{
       // check what the user wants to update
       if (req.body.bio !== undefined) {
         const bio = req.body.bio.replace(/(\r\n|\r|\n)/g, "\n");
-        console.log(bio)
+
         profil.bio = bio;
       }
       if (req.body.avatar !== undefined) {

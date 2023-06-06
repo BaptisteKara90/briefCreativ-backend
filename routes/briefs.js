@@ -18,8 +18,7 @@ const sharp = require('sharp');
 
 router.get('/generateBrief', async (req, res) => {
   try {
-    // get req params
-    console.log(req.query);
+    
     const { businessTypeName, projectTypeName, styleTypeName } = req.query;
 
     // get businessType by name or random
@@ -43,7 +42,7 @@ router.get('/generateBrief', async (req, res) => {
     let projectType;
     if (projectTypeName) {
       projectType = await ProjectType.findOne({ name: projectTypeName });
-      console.log(projectType)
+      
     } else {
       const projectTypes = await ProjectType.find();
       projectType = projectTypes[Math.floor(Math.random() * projectTypes.length)];
@@ -138,7 +137,7 @@ router.get('/creations/:id', async (req, res) => {
 
 
       res.json(creation);
-      //console.log(creation)
+  
   } catch (err) {
       res.status(500).json({ message: err.message });
   }
@@ -146,7 +145,7 @@ router.get('/creations/:id', async (req, res) => {
 
 //get creations with research params
 router.get('/creationsWParams', async (req, res) => {
-  //console.log('Route /creationsWParam atteinte')
+
   let filter = {};
   let limit=false;
 
@@ -164,26 +163,22 @@ router.get('/creationsWParams', async (req, res) => {
   if (req.query.limit) {
       limit = req.query.limit;
   }
-/*
-console.log('projectType:', req.query.projectType);
-console.log('entrepriseType:', req.query.entrepriseType);
-console.log('styleType:', req.query.styleType);
-*/
+
   try {
-      //console.log('Attempting to find briefs with filter:', filter);
+   
       let briefs = "";
       if(limit) { briefs = await Brief.find(filter).select('_id').limit(limit) } // pour le caroussel accueil
       else { briefs = await Brief.find(filter).select('_id'); }
-      //console.log('Found briefs:', briefs);
+ 
       const briefIds = briefs.map(brief => brief._id);
-      //console.log('Brief IDs:', briefIds);
+
       const creations = await Creation.find({ brief_id: { $in: briefIds } })
         .sort({_id:-1})
         .populate( {path:'brief_id', options: { _id:-1 }})
         .populate('brief_id')
         .populate('autor')
         .exec();
-        //console.log('Found creations:', creations);
+ 
       res.json({ result: true, creations: creations });
   } catch (err) {
       res.json({ result: false, error: err.message });
@@ -198,7 +193,7 @@ router.get('/user/search/:username', async (req, res) => {
         const user = await User.findOne({ username: { $regex: req.params.username, $options: 'i' } });
         if (user) {
             res.json(user);
-           // console.log(user)
+
         } else {
             res.status(404).json({ message: 'Utilisateur non trouvé' });
         }
@@ -218,7 +213,7 @@ router.get('/user/:userId/briefs', async (req, res) => {
       await Brief.find(userId).sort({date:-1}).populate( {path:'creations_id', options: { _id:-1 }}) // plus récente en premier
       .then( data => {
         if(data) {
-          ////console.log("Back",data)
+
           // lister les id créations de chaque brief
           res.json( { briefs: data, result:true } );
         }
@@ -234,11 +229,11 @@ router.get('/user/:userId/briefs', async (req, res) => {
   }
 });
 
-// .limit(limit).sort({date:-1});
+
 
 //get creations caroussel
 router.get('/caroussel', (req, res) => {
-  console.log('Route /creationscaroussel atteinte')
+
 
   try {
      // plus récente en premier et 4 seulement
@@ -261,7 +256,7 @@ router.get('/caroussel', (req, res) => {
 
 // get userCreation d'un by userId
 router.get('/user/:userId/creations', async (req, res) => {
-  console.log('Route userCreations');
+
   
   let filter = {};
 
@@ -277,16 +272,13 @@ router.get('/user/:userId/creations', async (req, res) => {
     filter['styleType'] = req.query.styleType;
   }
 
-  //console.log('projectType:', req.query.projectType);
-  //console.log('entrepriseType:', req.query.entrepriseType);
-  //console.log('styleType:', req.query.styleType);
 
   try {
-    //console.log('Attempting to find briefs with filter:', filter);
+
     const briefs = await Brief.find(filter).select('_id');
-    //console.log('Found briefs:', briefs);
+
     const briefIds = briefs.map(brief => brief._id);
-    //console.log('Brief IDs:', briefIds);
+
 
     const creations = await Creation.find({ 
       autor: new mongoose.Types.ObjectId(req.params.userId),
@@ -297,7 +289,7 @@ router.get('/user/:userId/creations', async (req, res) => {
     .populate('autor')
     .exec();
 
-    console.log('Found creations:', creations);
+
     if (creations && creations.length > 0) {
       res.json({ result: true, creations: creations });
     } else {
@@ -326,7 +318,7 @@ router.get('/:id', async (req, res) => {
 
 router.post('/creation', async (req, res) => {
   const ids = JSON.parse(req.body.ids);
-  console.log('req.body',req.body.ids)
+
   if (!checkBody(ids, ['brief_id', 'user_id'])) {
     return res.json({ result: false, error: 'Missing or empty fields' });
   } 
@@ -350,7 +342,7 @@ router.post('/creation', async (req, res) => {
      // si Idcreation edite sinon ajoute
      // const dataExiste = await Creation.findOne({ _id: ids.creation_id });
       const dataExiste = ids.creation_id
-      console.log("Req body", ids)
+
       if(dataExiste !== "") { // si Id creation ajoute img
           const data = await Creation.updateOne(
                         { _id: dataExiste },
@@ -376,7 +368,7 @@ router.post('/creation', async (req, res) => {
         fs.unlinkSync(photoPath);
         fs.unlinkSync(outputImage);
         res.json({ result: true, creation: newDoc });
-        console.log('la réponse', res.json)
+
       }
     } catch (e) {
       console.error(e);
@@ -433,7 +425,7 @@ router.put('/creations/:id', async (req, res) => {
 //handle likes on creations.
 
 router.patch('/creationsLikes/:id/like', async (req, res) => {
-  console.log('PATCH /creations/:id/like called');
+
   // token verification
   const token = req.headers['authorization'];
   if (!token) {
@@ -444,15 +436,14 @@ router.patch('/creationsLikes/:id/like', async (req, res) => {
   if (!user) {
     return res.status(401).json({ message: 'Token invalide' });
   }
-  //console.log('le token:',token)
-  //console.log('le user :', user)
+
 
   // search creation by ID
   const creation = await Creation.findOne({ _id: req.params.id });
   if (!creation) {
     return res.status(404).json({ message: 'Création non trouvée' });
   }
-  //console.log('la création:', creation)
+
 
   //add or remove user from like list 
   const userId = user._id.toString();
@@ -462,7 +453,7 @@ router.patch('/creationsLikes/:id/like', async (req, res) => {
   } else {
     creation.like.splice(index, 1);
   }
-  console.log("like : ",creation.like)
+
 
   try {
     await creation.save();
@@ -533,7 +524,7 @@ router.post('/creations/:id/comment',  [
       }
 
       res.status(200).json({ comment: addedComment.commentaires[addedComment.commentaires.length - 1] });
-      //console.log(addedComment.commentaires[addedComment.commentaires.length - 1])
+      
   } catch (err) {
       console.error(err);
       res.status(500).json({ error: "Erreur lors de l'ajout du commentaire" });
@@ -650,7 +641,7 @@ router.delete('/creations/:creationId/comment/:commentId', async (req, res) => {
 
 // supp img creation
 router.delete('/creations/suppimg', async (req, res) => {
-  //console.log("Supp création")
+
   const token = req.headers['authorization'];
   if (!token) {
     return res.status(401).json({ message: 'Token manquant' });
@@ -662,9 +653,9 @@ router.delete('/creations/suppimg', async (req, res) => {
   }
 
   const { creationId, imgLink } = req.body;
-  //console.log('Reqbody: ', req.body)
+ 
   // supp img
-  //console.log("Tot img", Creation.findById(creationId))
+
   Creation.findById(creationId)
   .then( crea => {
     Creation.updateOne({ _id: crea._id  }, { $pull: { images: { $gte: imgLink } }}) // supp cette img link
@@ -676,11 +667,11 @@ router.delete('/creations/suppimg', async (req, res) => {
           
             Creation.deleteOne( { _id: creationId  } )
             .then(
-              //console.log("Deletion ok !!!!")
+
               res.json({ result: true})
             )
         } else {
-          //console.log("No supp !!!!")
+
           if(resultat.modifiedCount > 0) {
             res.json({ result: true})
           } else {
