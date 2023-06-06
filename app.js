@@ -18,7 +18,13 @@ app.use(fileUpload());
 const cors = require('cors');
 app.use(cors());
 
-app.options('*', cors());
+const corsOptions = {
+    origin: 'https://brief-creativ-frontend.vercel.app',
+    methods: ['POST'],
+    allowedHeaders: ['Authorization'],
+  };
+  
+  app.options('https://brief-creativ-backend-pskunk.vercel.app/profils/avatar', cors(corsOptions));
 
 app.use(logger('dev'));
 app.use(express.json());
