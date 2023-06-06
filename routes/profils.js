@@ -102,17 +102,13 @@ router.post('/avatar', async (req,res)=>{
  if (!profil) {
    return res.status(401).json({ result: false, message: 'profile introuvable' });
  }else{
-  const photoPath = `./tmp/${uniqid()}.jpg`;
-  const resultMove = await req.files.avatar.mv(photoPath);
+  const avatarData = req.body;
+  const blob = new Blob([avatarData], { type: 'image/jpeg' });
 
-  if (!resultMove) {
-    const resultCloudinary = await cloudinary.uploader.upload(photoPath);
-    fs.unlinkSync(photoPath);
-    return res.json({ result: true, url: resultCloudinary.secure_url });
-  }else{
-    return res.json({result: false, error: resultMove});
-  }
- }
+  const resultCloudinary = await cloudinary.uploader.upload(blob);
+  
+  return res.json({ result: true, url: resultCloudinary.secure_url });
+}
   
 })
 
