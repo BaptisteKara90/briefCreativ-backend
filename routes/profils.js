@@ -4,10 +4,18 @@ const User = require('../models/users');
 const Profil = require('../models/profils');
 const { checkBody } = require('../modules/checkBody.js');
 const uid2 = require('uid2');
+const cors = require('cors');
 const bcrypt = require('bcrypt');
 const uniqid = require('uniqid');
 const cloudinary = require('cloudinary').v2;
 const fs = require('fs');
+
+const corsOptions = {
+  origin: 'https://brief-creativ-frontend.vercel.app',
+  methods: ['POST'],
+  allowedHeaders: ['Authorization'],
+};
+
 
 
 router.get('/', async (req,res)=>{
@@ -84,7 +92,7 @@ router.put('/', async (req, res)=>{
     }
 })  
 
-router.post('/avatar', async (req,res)=>{
+router.post('/avatar', cors(corsOptions), async (req,res)=>{
   // check if token
   const token = req.headers['authorization'];
   if (!token) {

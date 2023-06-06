@@ -22,7 +22,7 @@ const corsOptions = {
     origin: 'https://brief-creativ-frontend.vercel.app',
     methods: ['POST'],
     allowedHeaders: ['Authorization'],
-  };
+};
   
   app.options('/profils/avatar', cors(corsOptions));
 
