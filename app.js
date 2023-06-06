@@ -18,7 +18,6 @@ app.use(fileUpload());
 const cors = require('cors');
 app.use(cors({
     origin: "https://brief-creativ-frontend.vercel.app",
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"]
 }));
 
 
