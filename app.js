@@ -24,7 +24,7 @@ const corsOptions = {
     allowedHeaders: ['Authorization'],
   };
   
-  app.options('https://brief-creativ-backend-pskunk.vercel.app/profils/avatar', cors(corsOptions));
+  app.options('/profils/avatar', cors(corsOptions));
 
 app.use(logger('dev'));
 app.use(express.json());
