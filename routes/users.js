@@ -129,7 +129,7 @@ router.post('/signup', (req, res) => {
         const user = await User.findOne({ username: { $regex: req.params.username, $options: 'i' } }).populate('profil_id')
         .then((data)=>{
            if (data.username) {
-            res.json({result : true, user: data});
+            res.json({result : true, user: {token: data.token, email: data.email, username: data.username, followed: data.followed, profil_id: data.profile_id, date: data.date, admin: data.admin}});
         } else {
             res.json({ result: false , message: 'Utilisateur non trouvé' });
         }
