@@ -8,6 +8,7 @@ const bcrypt = require('bcrypt');
 const uniqid = require('uniqid');
 const cloudinary = require('cloudinary').v2;
 const fs = require('fs');
+const streamifier = require('streamifier');
 
 
 router.get('/', async (req,res)=>{
@@ -103,13 +104,12 @@ router.post('/avatar', async (req,res)=>{
    return res.status(401).json({ result: false, message: 'profile introuvable' });
  }else{
   const avatarData = req.body;
-  const blob = new Blob([avatarData], { type: 'image/jpeg' });
-  const buffer = await blob.arrayBuffer();
-    const photoBuffer = Buffer.from(buffer);
+  const photoBuffer = Buffer.from(avatarData);
+  const stream = cloudinary.uploader.upload_stream(async (resultCloudinary) => {
+    return res.json({ result: true, url: resultCloudinary.secure_url });
+  });
 
-    const resultCloudinary = await cloudinary.uploader.upload(photoBuffer);
-  
-  return res.json({ result: true, url: resultCloudinary.secure_url });
+  streamifier.createReadStream(photoBuffer).pipe(stream);
 }
   
 })
