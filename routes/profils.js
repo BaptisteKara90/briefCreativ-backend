@@ -8,9 +8,8 @@ const bcrypt = require('bcrypt');
 const uniqid = require('uniqid');
 const cloudinary = require('cloudinary').v2;
 const fs = require('fs');
-const streamifier = require('streamifier');
 
-
+console.log(cloudinary)
 router.get('/', async (req,res)=>{
     // check if token
     const token = req.headers['authorization'];
