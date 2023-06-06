@@ -121,7 +121,7 @@ router.post('/avatar', async (req,res)=>{
           res.status(500).send(error);
         }else{
           console.log(result);
-          res.send(result)
+          res.json({result})
         }
       }
     ).end(imageBuffer);
