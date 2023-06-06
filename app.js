@@ -16,15 +16,12 @@ const fileUpload = require('express-fileupload');
 app.use(fileUpload());
 
 const cors = require('cors');
-app.use(cors());
+app.use(cors({
+    origin: "https://brief-creativ-frontend.vercel.app",
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"]
+}));
 
-const corsOptions = {
-    origin: 'https://brief-creativ-frontend.vercel.app',
-    methods: ['POST'],
-    allowedHeaders: ['Authorization'],
-};
-  
-  app.options('/profils/avatar', cors(corsOptions));
+
 
 app.use(logger('dev'));
 app.use(express.json());
