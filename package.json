@@ -25,5 +25,6 @@
     "sharp": "^0.32.1",
     "uid2": "^1.0.0",
     "uniqid": "^5.4.0"
-  }
+  },
+  "proxy":"https://brief-creativ-backend.vercel.app/"
 }
