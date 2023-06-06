@@ -103,15 +103,29 @@ router.post('/avatar', async (req,res)=>{
  if (!profil) {
    return res.status(401).json({ result: false, message: 'profile introuvable' });
  }else{
-  const avatarData = req.body;
-  const photoBuffer = Buffer.from(avatarData);
-  const stream = cloudinary.uploader.upload_stream(async (resultCloudinary) => {
-    return res.json({ result: true, url: resultCloudinary.secure_url });
+  const imageData = [];
+
+  req.on('data', data=>{
+    imageData.push(data);
   });
 
-  streamifier.createReadStream(photoBuffer).pipe(stream);
-}
-  
+  req.on('end', ()=>{
+    const imageBuffer = Buffer.concat(imageData);
+
+    cloudinary.uploader.upload_stream(
+      {ressource_type:'image'},
+      async(error, result)=>{
+        if(error){
+          console.error(error);
+          res.status(500).send(error);
+        }else{
+          console.log(result);
+          res.send(result)
+        }
+      }
+    ).end(imageBuffer);
+  })
+} 
 })
 
 module.exports = router;
