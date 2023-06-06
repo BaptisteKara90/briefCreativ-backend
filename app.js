@@ -16,7 +16,9 @@ const fileUpload = require('express-fileupload');
 app.use(fileUpload());
 
 const cors = require('cors');
-app.use(cors());
+app.use(cors({
+    origin: 'https://brief-creativ-frontend.vercel.app',
+}));
 
 app.use(logger('dev'));
 app.use(express.json());
