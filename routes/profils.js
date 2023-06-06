@@ -106,6 +106,7 @@ router.post('/avatar', async (req,res)=>{
   const imageData = [];
 
   req.on('data', data=>{
+    console.log(data)
     imageData.push(data);
   });
 
