@@ -5,6 +5,7 @@ const Profil = require('../models/profils');
 const { checkBody } = require('../modules/checkBody.js');
 const uid2 = require('uid2');
 const bcrypt = require('bcrypt');
+const cors = require('cors')
 const uniqid = require('uniqid');
 const cloudinary = require('cloudinary').v2;
 const fs = require('fs');
@@ -84,7 +85,7 @@ router.put('/', async (req, res)=>{
     }
 })  
 
-router.post('/avatar', async (req,res)=>{
+router.post('/avatar',cors(), async (req,res)=>{
   // check if token
   const token = req.headers['authorization'];
   if (!token) {
