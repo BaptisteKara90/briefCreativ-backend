@@ -192,7 +192,7 @@ router.get('/user/search/:username', async (req, res) => {
     try {
         const user = await User.findOne({ username: { $regex: req.params.username, $options: 'i' } });
         if (user) {
-            res.json(user);
+            res.json({user: {_id: data._id, token: data.token, email: data.email, username: data.username, followed: data.followed, profil_id: data.profil_id, date: data.date, admin: data.admin}});
 
         } else {
             res.status(404).json({ message: 'Utilisateur non trouvé' });
