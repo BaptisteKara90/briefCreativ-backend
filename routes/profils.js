@@ -85,14 +85,6 @@ router.put('/', async (req, res)=>{
 })  
 
 router.post('/avatar', async (req,res)=>{
-  cloudinary.api.ping()
-        .then((res, err) => {
-            console.log(`Cloudinary connection ${res.status}`);
-        })
-        .catch(err => {
-            console.warn('Cloudinary connection failed.');
-            console.error(err.error);
-        });
   try{
   // check if token
   const token = req.headers['authorization'];
