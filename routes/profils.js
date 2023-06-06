@@ -86,6 +86,7 @@ router.put('/', async (req, res)=>{
 })  
 
 router.post('/avatar', async (req,res)=>{
+  try{
   // check if token
   const token = req.headers['authorization'];
   if (!token) {
@@ -126,6 +127,9 @@ router.post('/avatar', async (req,res)=>{
     ).end(imageBuffer);
   })
 } 
+}catch(err){
+  res.json({result: false, message: err})
+}
 })
 
 module.exports = router;
