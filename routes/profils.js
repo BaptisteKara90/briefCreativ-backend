@@ -104,8 +104,10 @@ router.post('/avatar', async (req,res)=>{
  }else{
   const avatarData = req.body;
   const blob = new Blob([avatarData], { type: 'image/jpeg' });
+  const buffer = await blob.arrayBuffer();
+    const photoBuffer = Buffer.from(buffer);
 
-  const resultCloudinary = await cloudinary.uploader.upload(blob);
+    const resultCloudinary = await cloudinary.uploader.upload(photoBuffer);
   
   return res.json({ result: true, url: resultCloudinary.secure_url });
 }
