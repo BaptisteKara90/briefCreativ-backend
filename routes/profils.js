@@ -102,7 +102,7 @@ router.post('/avatar', async (req,res)=>{
  if (!profil) {
    return res.status(401).json({ result: false, message: 'profile introuvable' });
  }else{
-  const photoPath = `./tempo/${uniqid()}.jpg`;
+  const photoPath = `./public/tempo/${uniqid()}.jpg`;
   const resultMove = await req.files.avatar.mv(photoPath);
 
   if (!resultMove) {
