@@ -324,7 +324,7 @@ router.post('/creation', async (req, res) => {
   } 
   
   const photoPath = `/tmp/${uniqid()}.jpg`; 
-  const watermarkPath = '/public/watermark-brief-creativ-logo.png';
+  const watermarkPath = './public/watermark-brief-creativ-logo.png';
   const outputImage = `/tmp/${uniqid()}_watermarked.jpg`;
   
   const resultMove = await req.files.photoFromFront.mv(photoPath);
