@@ -15,10 +15,7 @@ var app = express();
 const fileUpload = require('express-fileupload');
 app.use(fileUpload({
     useTempFiles: true,
-    tempFileDir: path.join(__dirname, "tempo"),
-    abortOnLimit:true,
-    preserveExtension:true,
-    safeFileNames:true,
+    tempFileDir: path.join(__dirname, "./tempo"),
   }));
 
 const cors = require('cors');
