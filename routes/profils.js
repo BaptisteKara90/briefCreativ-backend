@@ -117,55 +117,5 @@ router.post('/avatar', async (req,res)=>{
   
 })
 
-// router.post('/avatar', async (req,res)=>{
-//   try{
-//   // check if token
-//   const token = req.headers['authorization'];
-//   if (!token) {
-//     return res.status(401).json({ message: 'Token manquant' });
-//   }
-
-//   // find user by token
-//   const user = await User.findOne({ token: token });
-//   if (!user) {
-//     return res.status(401).json({ message: 'Token invalide' });
-//   }
-
-//  //find profil by user ID
-//  const profil = await Profil.findOne({user_id: user._id});
-//  if (!profil) {
-//    return res.status(401).json({ result: false, message: 'profile introuvable' });
-//  }else{
-//   const imageData = [];
-//   console.log('avant le req.on')
-
-//   req.on('data', (chunk)=>{
-//     console.log('marche non?')
-//     console.log(chunk)
-//     imageData.push(chunk);
-//   });
-
-//   req.on('end', ()=>{
-//     const imageBuffer = Buffer.concat(imageData);
-
-//     cloudinary.uploader.upload_stream(
-//       {ressource_type:'image'},
-//       async(error, result)=>{
-//         if(error){
-//           console.error(error);
-//           res.status(500).send(error);
-//         }else{
-//           console.log(result);
-//           res.json({result})
-//         }
-//       }
-//     ).end(imageBuffer);
-//   })
-// } 
-// }catch(err){
-//   res.json({result: false, message: err})
-// }
-// })
-
 
 module.exports = router;
