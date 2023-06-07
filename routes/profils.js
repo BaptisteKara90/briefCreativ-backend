@@ -10,6 +10,7 @@ const cloudinary = require('cloudinary').v2;
 const fs = require('fs');
 
 
+
 router.get('/', async (req,res)=>{
     // check if token
     const token = req.headers['authorization'];
@@ -84,37 +85,37 @@ router.put('/', async (req, res)=>{
     }
 })  
 
-router.post('/avatar', async (req,res)=>{
-  // check if token
-  const token = req.headers['authorization'];
-  if (!token) {
-    return res.status(401).json({ message: 'Token manquant' });
-  }
+// router.post('/avatar', async (req,res)=>{
+//   // check if token
+//   const token = req.headers['authorization'];
+//   if (!token) {
+//     return res.status(401).json({ message: 'Token manquant' });
+//   }
 
-  // find user by token
-  const user = await User.findOne({ token: token });
-  if (!user) {
-    return res.status(401).json({ message: 'Token invalide' });
-  }
+//   // find user by token
+//   const user = await User.findOne({ token: token });
+//   if (!user) {
+//     return res.status(401).json({ message: 'Token invalide' });
+//   }
 
- //find profil by user ID
- const profil = await Profil.findOne({user_id: user._id});
- if (!profil) {
-   return res.status(401).json({ result: false, message: 'profile introuvable' });
- }else{
-  const photoPath = `./tempo/${uniqid()}.jpg`;
-  const resultMove = await req.files.avatar.mv(photoPath);
+//  //find profil by user ID
+//  const profil = await Profil.findOne({user_id: user._id});
+//  if (!profil) {
+//    return res.status(401).json({ result: false, message: 'profile introuvable' });
+//  }else{
+//   const photoPath = `./tempo/${uniqid()}.jpg`;
+//   const resultMove = await req.files.avatar.mv(photoPath);
 
-  if (!resultMove) {
-    const resultCloudinary = await cloudinary.uploader.upload(photoPath);
-    fs.unlinkSync(photoPath);
-    return res.json({ result: true, url: resultCloudinary.secure_url });
-  }else{
-    return res.json({result: false, error: resultMove});
-  }
- }
+//   if (!resultMove) {
+//     const resultCloudinary = await cloudinary.uploader.upload(photoPath);
+//     fs.unlinkSync(photoPath);
+//     return res.json({ result: true, url: resultCloudinary.secure_url });
+//   }else{
+//     return res.json({result: false, error: resultMove});
+//   }
+//  }
   
-})
+// })
 
 // router.post('/avatar', async (req,res)=>{
 //   try{
@@ -136,10 +137,12 @@ router.post('/avatar', async (req,res)=>{
 //    return res.status(401).json({ result: false, message: 'profile introuvable' });
 //  }else{
 //   const imageData = [];
-    
-//   req.on('data', data=>{
-//     console.log(data)
-//     imageData.push(data);
+//   console.log('avant le req.on')
+
+//   req.on('data', (chunk)=>{
+//     console.log('marche non?')
+//     console.log(chunk)
+//     imageData.push(chunk);
 //   });
 
 //   req.on('end', ()=>{
@@ -163,5 +166,50 @@ router.post('/avatar', async (req,res)=>{
 //   res.json({result: false, message: err})
 // }
 // })
+
+router.post('/avatar', async (req, res) => {
+  try {
+    const token = req.headers['authorization'];
+    if (!token) {
+      return res.status(401).json({ message: 'Token manquant' });
+    }
+
+    // Trouver l'utilisateur par le token
+    const user = await User.findOne({ token: token });
+    if (!user) {
+      return res.status(401).json({ message: 'Token invalide' });
+    }
+
+    // Trouver le profil par l'ID de l'utilisateur
+    const profil = await Profil.findOne({ user_id: user._id });
+    if (!profil) {
+      return res.status(401).json({ result: false, message: 'Profil introuvable' });
+    }
+
+    // Vérifier si un fichier a été envoyé
+    if (!req.files || !req.files.avatar) {
+      return res.status(400).json({ message: 'Aucun fichier trouvé' });
+    }
+
+    // Le fichier est disponible sous req.files.avatar
+    const avatarFile = req.files.avatar;
+
+    // Envoyer le fichier vers Cloudinary
+    const uploadResult = await cloudinary.uploader.upload(avatarFile.tempFilePath);
+
+    // Récupérer l'URL de l'image depuis la réponse de Cloudinary
+    const imageUrl = uploadResult.secure_url;
+
+    // Mettre à jour l'avatar dans le profil de l'utilisateur
+    profil.avatar = imageUrl;
+    await profil.save();
+
+    res.json({ result: true, message: 'Avatar mis à jour avec succès' });
+  } catch (err) {
+    res.status(500).json({ result: false, message: err.message });
+  }
+});
+
+
 
 module.exports = router;
