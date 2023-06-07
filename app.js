@@ -13,10 +13,9 @@ var messagesRouter = require('./routes/messages')
 var app = express();
 
 const fileUpload = require('express-fileupload');
-app.use(fileUpload({
-    useTempFiles: true,
-    tempFileDir: path.join(__dirname, "./tempo"),
-  }));
+app.use(fileUpload());
+
+
 
 const cors = require('cors');
 app.use(cors());
