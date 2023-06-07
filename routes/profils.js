@@ -8,6 +8,7 @@ const bcrypt = require('bcrypt');
 const uniqid = require('uniqid');
 const cloudinary = require('cloudinary').v2;
 const fs = require('fs');
+const busboy = require('busboy');
 
 
 router.get('/', async (req,res)=>{
@@ -102,7 +103,7 @@ router.post('/avatar', async (req,res)=>{
  if (!profil) {
    return res.status(401).json({ result: false, message: 'profile introuvable' });
  }else{
-  const photoPath = `./tmp/${uniqid()}.jpg`;
+  const photoPath = `/tmp/${uniqid()}.jpg`;
   const resultMove = await req.files.avatar.mv(photoPath);
 
   if (!resultMove) {
@@ -113,7 +114,8 @@ router.post('/avatar', async (req,res)=>{
     return res.json({result: false, error: resultMove});
   }
  }
-  
+ 
 })
+
 
 module.exports = router;
