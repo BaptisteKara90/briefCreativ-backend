@@ -323,9 +323,9 @@ router.post('/creation', async (req, res) => {
     return res.json({ result: false, error: 'Missing or empty fields' });
   } 
   
-  const photoPath = `./tmp/${uniqid()}.jpg`; 
-  const watermarkPath = './public/watermark-brief-creativ-logo.png';
-  const outputImage = `./tmp/${uniqid()}_watermarked.jpg`;
+  const photoPath = `/tmp/${uniqid()}.jpg`; 
+  const watermarkPath = '/public/watermark-brief-creativ-logo.png';
+  const outputImage = `/tmp/${uniqid()}_watermarked.jpg`;
   
   const resultMove = await req.files.photoFromFront.mv(photoPath);
   if (!resultMove) {
