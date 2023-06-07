@@ -114,7 +114,7 @@ router.post('/avatar', async (req,res)=>{
     return res.json({result: false, error: resultMove});
   }
  }
-  
+ 
 })
 
 
